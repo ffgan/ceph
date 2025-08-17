@@ -11,7 +11,7 @@ pyyaml
 natsort
 setuptools
 jsonpatch
-grpcio
-grpcio-tools
 jmespath
 xmltodict
+grpcio==1.60.1
+grpcio-tools==1.60.1

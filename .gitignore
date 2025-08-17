@@ -97,3 +97,8 @@ src/pybind/rbd/rbd.egg-info/
 src/pybind/rgw/build/
 src/pybind/rgw/rgw.c
 src/pybind/rgw/rgw.egg-info/
+
+
+
+# riscv64 used patch
+!src/arch/patch/arrow_riscv64_support.patch

@@ -84,6 +84,10 @@ class Cycles {
     uint64_t tsc;
     asm volatile("stck %0" : "=Q" (tsc) : : "cc");
     return tsc;
+#elif defined(__riscv) || defined(__riscv__)
+    uint64_t time_val;
+    asm volatile("rdtime %0" : "=r" (time_val));
+    return time_val;
 #else
 #warning No high-precision counter available for your OS/arch
     return 0;

@@ -15,6 +15,11 @@ function(build_arrow)
   # share the version ceph is using
   list(APPEND arrow_CMAKE_ARGS -DARROW_JEMALLOC=OFF)
 
+
+  if (CMAKE_SYSTEM_PROCESSOR MATCHES "riscv64|RISCV64")
+    list(APPEND arrow_CMAKE_ARGS -DARROW_SIMD_LEVEL=NONE)
+  endif()
+
   # transitive dependencies
   list(APPEND arrow_INTERFACE_LINK_LIBRARIES thrift)
 

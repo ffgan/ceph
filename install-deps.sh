@@ -270,7 +270,7 @@ function populate_wheelhouse() {
     # of pip matters when it comes to using wheel packages
     PIP_OPTS="--timeout 300 --exists-action i"
     pip $PIP_OPTS $install \
-      'setuptools >= 0.8' 'pip >= 21.0' 'wheel >= 0.24' 'tox >= 2.9.1' || return 1
+      'setuptools >= 80.9.0' 'pip >= 25.1.1' 'wheel >= 0.45.1' 'tox >= 2.9.1' || return 1
     if test $# != 0 ; then
         pip $PIP_OPTS $install $@ || return 1
     fi
@@ -312,6 +312,14 @@ function preload_wheels_for_tox() {
         type python3 > /dev/null 2>&1 || continue
         activate_virtualenv $top_srcdir || exit 1
         python3 -m pip install --upgrade pip
+        if [ $ARCH = "riscv64" ];then
+            
+            # activate rust toolchain env
+            . "$HOME/.cargo/env"
+            rustup set default-host riscv64gc-unknown-linux-gnu
+            pip install -U pip setuptools setuptools_rust
+        fi
+
         populate_wheelhouse "wheel -w $wip_wheelhouse" $require $constraint || exit 1
         mv $wip_wheelhouse wheelhouse
         md5sum $require_files $constraint_files > $md5
@@ -391,6 +399,27 @@ else
     source /etc/os-release
     case "$ID" in
     debian|ubuntu|devuan|elementary|softiron)
+
+        if [ $ARCH = "riscv64" ];then
+            echo "current arch is riscv,need to prepare something"
+            apt-get update
+            apt-get install sudo libopenblas-dev libgoogle-perftools-dev libjemalloc-dev zip libicu-dev python3 python3-pip build-essential doxygen  -y
+            # BUG: On riscv64 ubuntu, ceph lacks support for two packages, one is ceph-libboost and the other is valgrind
+            # Until these two packages are supported, running install-deps.sh on Ubuntu with rv64 will not work.
+
+            # src/arrow need to modify to allow riscv64 build
+            cp src/arch/patch/arrow_riscv64_support.patch src/arrow/arrow_riscv64_support.patch
+            pushd src/arrow
+            git checkout .
+            git apply arrow_riscv64_support.patch
+            popd
+
+            # setup rust toolchain for riscv arch
+            echo "Since some pypi wheel don't support riscv64, we need to package them locally, so we need to install rust toolchain manually,"
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+            . "$HOME/.cargo/env"
+        fi
+
         echo "Using apt-get to install dependencies"
 	# Put this before any other invocation of apt so it can clean
 	# up in a broken case.

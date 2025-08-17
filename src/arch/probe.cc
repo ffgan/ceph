@@ -7,6 +7,7 @@
 #include "arch/arm.h"
 #include "arch/ppc.h"
 #include "arch/s390x.h"
+#include "arch/riscv.h"
 
 int ceph_arch_probe(void)
 {
@@ -20,6 +21,8 @@ int ceph_arch_probe(void)
   ceph_arch_ppc_probe();
 #elif defined(__s390__)
   ceph_arch_s390x_probe();
+#elif defined(__riscv) || defined(__riscv_arch_rv64i)
+  ceph_arch_riscv_probe();
 #endif
   ceph_arch_probed = 1;
   return 1;

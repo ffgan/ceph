@@ -70,6 +70,7 @@ else(WITH_SYSTEM_NPM)
     # uid 1000 and running the unpack in a id-mapped namespace (container)
     # that lets tar set the uid to a "bad" uid outside the namespace
     COMMAND bash -c 'chown -R `id -u`:`id -g` ${mgr-dashboard-nodeenv-dir}/src'
+    COMMAND ${mgr-dashboard-nodeenv-dir}/bin/pip install --upgrade setuptools setuptools_rust pip 
     COMMAND mkdir ${mgr-dashboard-nodeenv-dir}/.npm
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "dashboard nodeenv is being installed")

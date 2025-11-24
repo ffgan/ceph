@@ -544,7 +544,7 @@ else
         munge_ceph_spec_in $with_crimson $for_make_check $DIR/ceph.spec
         # for python3_pkgversion macro defined by python-srpm-macros, which is required by python3-devel
         $SUDO dnf install -y python3-devel
-        $SUDO $builddepcmd $DIR/ceph.spec 2>&1 | tee $DIR/yum-builddep.out
+        $SUDO $builddepcmd $DIR/ceph.spec 2>&1 | tee $DIR/yum-builddep.out --skip-unavailable
         [ ${PIPESTATUS[0]} -ne 0 ] && exit 1
         if [ -n "$dts_ver" ]; then
             ensure_decent_gcc_on_rh $dts_ver

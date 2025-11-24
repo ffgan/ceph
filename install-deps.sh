@@ -543,7 +543,7 @@ else
         fi
         munge_ceph_spec_in $with_crimson $for_make_check $DIR/ceph.spec
         # for python3_pkgversion macro defined by python-srpm-macros, which is required by python3-devel
-        $SUDO dnf install -y python3-devel golang-github-prometheus gcc g++ make
+        $SUDO dnf install -y python3-devel gcc g++ make
 
         $SUDO $builddepcmd  --skip-unavailable $DIR/ceph.spec 2>&1 | tee $DIR/yum-builddep.out
         [ ${PIPESTATUS[0]} -ne 0 ] && exit 1
